@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from . import metrics
 from .openai_llm import create_llm
 from .mock_rag import retrieve
-from .pii import hash_user_id, summarize_text
+from .pii import hash_user_id, scrub_text, summarize_text
 from .tracing import langfuse_context, observe
 
 
@@ -27,14 +27,19 @@ class LabAgent:
 
     @observe()
     def run(self, user_id: str, feature: str, session_id: str, message: str) -> AgentResult:
+        langfuse_context.update_current_observation(
+            input={"message": scrub_text(message), "feature": feature},
+        )
+
         started = time.perf_counter()
         docs = retrieve(message)
         
         # Create a more realistic prompt with retrieved context
         context = "\n".join(docs) if docs else "No relevant context found."
+        safe_message = scrub_text(message)
         prompt = f"""Context: {context}
 
-User Question: {message}
+User Question: {safe_message}
 
 Please provide a helpful and accurate response based on the context provided. If the context doesn't contain relevant information, please say so and provide general guidance if appropriate."""
 
