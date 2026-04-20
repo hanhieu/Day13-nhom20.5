@@ -4,7 +4,7 @@ import os
 from typing import Any
 
 try:
-    from langfuse.decorators import langfuse_context, observe
+    from langfuse.decorators import observe, langfuse_context
 except Exception:  # pragma: no cover
     def observe(*args: Any, **kwargs: Any):
         def decorator(func):

@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import time
+import os
 from dataclasses import dataclass
 
 from . import metrics
 from .openai_llm import create_llm
 from .mock_rag import retrieve
-from .pii import hash_user_id, summarize_text
+from .pii import hash_user_id, scrub_text, summarize_text
 from .tracing import langfuse_context, observe
 
 
@@ -27,14 +28,19 @@ class LabAgent:
 
     @observe()
     def run(self, user_id: str, feature: str, session_id: str, message: str, correlation_id: str = None) -> AgentResult:
+        langfuse_context.update_current_observation(
+            input={"message": scrub_text(message), "feature": feature},
+        )
+
         started = time.perf_counter()
         docs = retrieve(message)
         
         # Create a more realistic prompt with retrieved context
         context = "\n".join(docs) if docs else "No relevant context found."
+        safe_message = scrub_text(message)
         prompt = f"""Context: {context}
 
-User Question: {message}
+User Question: {safe_message}
 
 Please provide a helpful and accurate response based on the context provided. If the context doesn't contain relevant information, please say so and provide general guidance if appropriate."""
 
@@ -43,28 +49,32 @@ Please provide a helpful and accurate response based on the context provided. If
         latency_ms = int((time.perf_counter() - started) * 1000)
         cost_usd = self._estimate_cost(response.usage.input_tokens, response.usage.output_tokens, response.model)
 
-        # Update Langfuse context with metadata including correlation ID
+        # Determine quality tag for easier filtering in Langfuse
+        quality_tag = "quality:high" if quality_score >= 0.7 else "quality:low"
+
+        # Update Langfuse trace with metadata and tags
         langfuse_context.update_current_trace(
-            name=f"chat_request_{correlation_id}",  # Set trace name to include correlation ID
+            name=f"chat_{correlation_id}" if correlation_id else "chat_request",
+            user_id=hash_user_id(user_id),
+            session_id=session_id,
+            tags=[feature, os.getenv("APP_ENV", "dev"), response.model, quality_tag],
             metadata={
                 "correlation_id": correlation_id,
-            }
-        )
-        
-        langfuse_context.update_current_observation(
-            metadata={
-                "correlation_id": correlation_id,  # Add correlation ID to Langfuse
-                "user_id_hash": hash_user_id(user_id),
-                "session_id": session_id,
                 "feature": feature,
                 "model": response.model,
-                "doc_count": len(docs), 
+                "doc_count": len(docs),
                 "query_preview": summarize_text(message),
                 "tokens_in": response.usage.input_tokens,
                 "tokens_out": response.usage.output_tokens,
                 "cost_usd": cost_usd,
-                "quality_score": quality_score,
             },
+        )
+        
+        # Record quality score in Langfuse
+        langfuse_context.score_current_trace(
+            name="quality_score",
+            value=quality_score,
+            comment="Heuristic quality score",
         )
 
         metrics.record_request(
