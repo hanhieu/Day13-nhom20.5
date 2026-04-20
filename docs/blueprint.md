@@ -108,8 +108,20 @@
 - [EVIDENCE_LINK]: (Provide Link to commit or PR for SLO & Alerts)
 
 ### Nguyễn Gia Bảo - 2A202600156 (Member D)
-- [TASKS_COMPLETED]: Developed load testing scripts (`scripts/load_test.py`) to benchmark parallel bottlenecks and executed incident injection scenarios (`rag_slow`) to validate system observability.
-- [EVIDENCE_LINK]: (Provide Link to commit or PR for Load Test & Incidents)
+- [TASKS_COMPLETED]:
+  1. **Nâng cấp `scripts/load_test.py`**: Viết lại hoàn toàn load test script. Xây dựng `RequestResult` dataclass thu thập dữ liệu từng request (status, latency, tokens, cost, correlation_id) và `LoadTestReport` class tính toán thống kê tổng hợp (P50/P95/P99 latency, error rate, total cost, avg cost/req, token totals). Thêm các CLI arguments: `--rounds` (lặp queries N lần để tạo nhiều traces), `--delay` (khoảng cách giữa requests), `--concurrency` (chạy song song với ThreadPoolExecutor), `--base-url`. Sửa lỗi BASE_URL không đồng nhất giữa các scripts (8001→8000). Export `run_load_test()` dưới dạng hàm có return `LoadTestReport` để `incident_demo.py` tái sử dụng.
+  2. **Nâng cấp `scripts/inject_incident.py`**: Thêm `--status` để hiển thị trạng thái ON/OFF của tất cả incidents, `--all` để bật/tắt cả 3 scenarios cùng lúc, `--base-url` và error handling (HTTPStatusError, ConnectError). Hiển thị kết quả xác nhận sau mỗi thao tác.
+  3. **Tạo mới `scripts/incident_demo.py`**: Script tự động hóa toàn bộ quy trình Incident Response gồm 6 phases liên tục: (1) Baseline traffic → (2) Inject incident → (3) Traffic under incident → (4) Disable incident → (5) Recovery traffic → (6) In bảng so sánh Baseline vs Incident vs Recovery với delta %. Hỗ trợ `--scenario` (chạy 1 scenario), `--all` (chạy tuần tự cả 3: rag_slow, tool_fail, cost_spike). Tự động kiểm tra kết nối tới app trước khi bắt đầu, disable tất cả incidents sau khi hoàn tất. In Root Cause Hints giải thích cách xác định nguyên nhân cho từng scenario dựa trên Metrics → Traces → Logs.
+  4. **Bổ sung `data/sample_queries.jsonl`**: Thêm 5 queries mới (u11–u15) tăng diversity (refund, latency percentile, monitoring pipeline, CCCD PII test, structured logging best practices). Tổng 15 queries/round đảm bảo vượt yêu cầu 10 traces.
+  5. **Chạy full test cả 3 scenarios** (`rag_slow`, `tool_fail`, `cost_spike`) và thu thập dữ liệu before/after cho Section 4 — Incident Response.
+
+  **Giải thích kỹ thuật — Cách tính Percentile (P95) trong `LoadTestReport`**:
+  Thuật toán percentile hoạt động như sau: sắp xếp mảng latency tăng dần (sorted), tính index = `round((p/100) × N + 0.5) − 1`, clamp vào khoảng `[0, N−1]`. Ví dụ với N=15 values: P95 → index = round(0.95 × 15 + 0.5) − 1 = round(14.75) − 1 = 15 − 1 = 14 → lấy phần tử cuối cùng (giá trị lớn nhất). Với N=100 values: P95 → index 94 → phần tử thứ 95, nghĩa là 95% requests có latency thấp hơn hoặc bằng giá trị này. Đây là SLI chính được dùng trong SLO `Latency P95 < 3000ms`.
+
+- [EVIDENCE_LINK]:
+  - Commit chính: `054d673` — `feat: upgrade load test & incident injection scripts` (nhánh `roleD`)
+  - PR #1 merged vào main: `6fc68a2` — `Merge pull request #1 from hanhieu/roleD`
+  - Files đã thay đổi: `scripts/load_test.py`, `scripts/inject_incident.py`, `scripts/incident_demo.py` (new), `data/sample_queries.jsonl`
 
 ### Hàn Quang Hiếu - 2A202600056 (Member E)
 - [TASKS_COMPLETED]: Built and configured the 6-panel frontend observability dashboard (`dashboard.html` and `config/dashboard.json`) with real-time metrics visualization, SLO compliance indicators, and auto-refresh functionality. Upgraded system from mock LLM to real OpenAI API integration (`app/openai_llm.py`) enabling authentic cost tracking, token usage, and model performance data in Langfuse. Collected comprehensive evidence including screenshots, metrics validation, and incident detection documentation.
