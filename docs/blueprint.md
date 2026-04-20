@@ -132,8 +132,11 @@
   - Real LLM Integration: Replaced `FakeLLM` with `OpenAILLM` for authentic Langfuse model costs and usage data
 
 ### Nguyễn Bình Thành - 2A202600138 (Member F)
-- [TASKS_COMPLETED]: Compiled the Blueprint report, synthesized the Root Cause Analysis (RCA) in the Incident Response section, and prepared the Demo script to showcase the system.
-- [EVIDENCE_LINK]: (Provide Link to commit or PR for Blueprint)
+- [TASKS_COMPLETED]: Compiled the Blueprint report, synthesized the Root Cause Analysis (RCA) in the Incident Response section, and prepared the Demo script to showcase the system. Led the team demo presentation flow (baseline → incident injection → recovery) and explained the observability findings live. Fixed the Langfuse issue where traces were not grouped consistently by correlation ID by propagating `correlation_id` across request handling and deriving a deterministic `trace_id` for Langfuse.
+- [EVIDENCE_LINK]:
+  - Langfuse correlation ID tracking fix: https://github.com/hanhieu/Day13-HanQuangHieu-2A202600056/commit/097b7a0546fd5ca11be9476584ce5b9f6f17dd2d
+  - Correlation ID middleware foundation: https://github.com/hanhieu/Day13-HanQuangHieu-2A202600056/commit/b86f4a4625c711f00423d582e18f12d296bfac94
+  - Blueprint and demo ownership: docs/blueprint.md and demo flow in Section 4 (Incident Response)
 
 ---
 
