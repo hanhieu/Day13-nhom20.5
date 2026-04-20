@@ -3,12 +3,12 @@
 ## ✅ 6-Panel Dashboard Completed
 
 ### Panel Overview
-1. **🚀 Latency Percentiles** - P50/P95/P99 with SLO threshold line (3000ms)
+1. **🚀 Latency Percentiles** - P50/P95/P99 with SLO threshold line (5000ms)
 2. **📊 Request Traffic** - Total requests and QPS visualization
 3. **⚠️ Error Rate & Breakdown** - Error percentage with breakdown by type
-4. **💰 Cost Over Time** - Total and average cost with budget threshold ($2.50/day)
+4. **💰 Cost Over Time** - Total and average cost with budget threshold ($5.00/day)
 5. **🔤 Token Usage** - Input/output tokens with stacked visualization
-6. **⭐ Quality Score** - Average quality score with SLO threshold (0.75)
+6. **⭐ Quality Score** - Average quality score with SLO threshold (0.80)
 
 ### Dashboard Features
 - **Auto-refresh**: 30 seconds
@@ -28,19 +28,19 @@
 ### Alert Categories
 
 #### 🚨 Latency Alerts
-- **high_latency_p95**: P95 > 3000ms for 5m (P2)
-- **extreme_latency_p99**: P99 > 10000ms for 2m (P1)
+- **high_latency_p95**: P95 > 5000ms for 5m (P2)
+- **extreme_latency_p99**: P99 > 15000ms for 2m (P1)
 
 #### ⚠️ Error Rate Alerts  
-- **high_error_rate**: Error rate > 2% for 3m (P1)
+- **high_error_rate**: Error rate > 5.0% for 3m (P1)
 - **critical_error_rate**: Error rate > 10% for 1m (P0)
 
 #### 💰 Cost Alerts
 - **cost_budget_spike**: Hourly cost > $1.0 for 15m (P2)
-- **daily_cost_budget_exceeded**: Daily cost > $2.5 for 1h (P1)
+- **daily_cost_budget_exceeded**: Daily cost > $5.0 for 1h (P1)
 
 #### ⭐ Quality Alerts
-- **low_quality_score**: Quality < 0.75 for 10m (P2)
+- **low_quality_score**: Quality < 0.80 for 10m (P2)
 - **critical_quality_degradation**: Quality < 0.5 for 5m (P1)
 
 #### 📊 Traffic Alerts
@@ -54,8 +54,8 @@
 python scripts/inject_incident.py --scenario rag_slow
 ```
 - **Result**: Latency increased to ~2650ms
-- **Expected Alert**: `high_latency_p95` (threshold: 3000ms)
-- **Status**: ⚠️ Close to threshold, would trigger if slightly higher
+- **Expected Alert**: `high_latency_p95` (threshold: 5000ms)
+- **Status**: ⚠️ Below threshold, incident injection would need to be stronger
 
 #### ✅ Error Rate Test
 ```bash
@@ -84,10 +84,10 @@ python scripts/inject_incident.py --scenario cost_spike
 - **Quality**: 0.88 average
 
 ### SLO Compliance Status
-- ⚠️ **Latency**: Close to SLO (2651ms vs 3000ms threshold)
-- ❌ **Error Rate**: Exceeds SLO (100% vs 2% threshold)
-- ✅ **Cost**: Within budget ($0.102 vs $2.50 daily)
-- ✅ **Quality**: Above SLO (0.88 vs 0.75 threshold)
+- ✅ **Latency**: Within SLO (2651ms vs 5000ms threshold)
+- ❌ **Error Rate**: Exceeds SLO (100% vs 5.0% threshold)
+- ✅ **Cost**: Within budget ($0.102 vs $5.00 daily)
+- ✅ **Quality**: Above SLO (0.88 vs 0.80 threshold)
 
 ## 🔧 Files Created/Modified
 
