@@ -4,8 +4,7 @@ import os
 from typing import Any
 
 try:
-    from langfuse import observe, get_client
-    langfuse_context = get_client()
+    from langfuse.decorators import observe, langfuse_context
 except Exception:  # pragma: no cover
     def observe(*args: Any, **kwargs: Any):
         def decorator(func):
@@ -20,6 +19,12 @@ except Exception:  # pragma: no cover
             return None
 
         def update_current_span(self, **kwargs: Any) -> None:
+            return None
+
+        def score_current_trace(self, **kwargs: Any) -> None:
+            return None
+
+        def get_current_trace_id(self) -> str | None:
             return None
 
     langfuse_context = _DummyContext()
