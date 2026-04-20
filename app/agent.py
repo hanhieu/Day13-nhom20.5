@@ -26,7 +26,7 @@ class LabAgent:
         self.llm = create_llm(model=model)
 
     @observe()
-    def run(self, user_id: str, feature: str, session_id: str, message: str) -> AgentResult:
+    def run(self, user_id: str, feature: str, session_id: str, message: str, correlation_id: str = None) -> AgentResult:
         started = time.perf_counter()
         docs = retrieve(message)
         
@@ -43,9 +43,17 @@ Please provide a helpful and accurate response based on the context provided. If
         latency_ms = int((time.perf_counter() - started) * 1000)
         cost_usd = self._estimate_cost(response.usage.input_tokens, response.usage.output_tokens, response.model)
 
-        # Update Langfuse context with metadata
+        # Update Langfuse context with metadata including correlation ID
+        langfuse_context.update_current_trace(
+            name=f"chat_request_{correlation_id}",  # Set trace name to include correlation ID
+            metadata={
+                "correlation_id": correlation_id,
+            }
+        )
+        
         langfuse_context.update_current_span(
             metadata={
+                "correlation_id": correlation_id,  # Add correlation ID to Langfuse
                 "user_id_hash": hash_user_id(user_id),
                 "session_id": session_id,
                 "feature": feature,

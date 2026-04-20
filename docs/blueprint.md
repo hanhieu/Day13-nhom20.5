@@ -24,19 +24,20 @@
 ## 3. Technical Evidence (Group)
 
 ### 3.1 Logging & Tracing
-- [EVIDENCE_CORRELATION_ID_SCREENSHOT]: 
+- [EVIDENCE_CORRELATION_ID_SCREENSHOT]: screenshot/Dashboard langfuse.png; screenshot/Dashboard langfuse.png
 - [EVIDENCE_PII_REDACTION_SCREENSHOT]: 
-- [EVIDENCE_TRACE_WATERFALL_SCREENSHOT]: 
-- [TRACE_WATERFALL_EXPLANATION]: The trace shows the complete request flow with OpenAI API integration, including RAG retrieval spans, LLM generation with real token usage, and proper correlation ID propagation. The waterfall demonstrates latency spikes during incident scenarios (rag_slow) where retrieval spans take 2.5+ seconds.
+- [EVIDENCE_TRACE_WATERFALL_SCREENSHOT]: screenshot/Dashboard langfuse.png; screenshot/Dashboard langfuse.png
+- [TRACE_WATERFALL_EXPLANATION]: The trace shows the complete request flow with OpenAI API integration, including RAG retrieval spans, LLM generation with real token usage, and proper correlation ID propagation. The waterfall demonstrates latency spikes during incident scenarios (rag_slow) where retrieval spans take 2.5+ seconds. Langfuse dashboard displays 302 traces with real OpenAI model costs and correlation IDs.
 
 ### 3.2 Dashboard & SLOs
 - [DASHBOARD_6_PANELS_SCREENSHOT]: screenshot/Dashboard 6 panel.png
 - [SLO_TABLE]:
+
 | SLI | Target | Window | Current Value |
 |---|---:|---|---:|
-| Latency P95 | < 3000ms | 28d | 8000ms |
+| Latency P95 | < 3000ms | 28d | 12088ms |
 | Error Rate | < 2% | 28d | 0% |
-| Cost Budget | < $2.5/day | 1d | $0.50 |
+| Cost Budget | < $2.5/day | 1d | $1.20 |
 
 ### 3.3 Alerts & Runbook
 - [ALERT_RULES_SCREENSHOT]: 
@@ -76,7 +77,7 @@
 - [EVIDENCE_LINK]: 
   - Dashboard Implementation: `dashboard.html`, `config/dashboard.json`, `serve_dashboard.py`
   - OpenAI Integration: `app/openai_llm.py`, `app/agent.py` (upgraded from mock_llm)
-  - Evidence Collection: `screenshot/Dashboard 6 panel.png`, `docs/dashboard-implementation.md`
+  - Evidence Collection: `screenshot/Dashboard 6 panel.png`, `screenshot/Dashboard langfuse.png`, `screenshot/Tracing langfuse.png`
   - Real LLM Integration: Replaced `FakeLLM` with `OpenAILLM` for authentic Langfuse model costs and usage data
 
 ### Nguyễn Bình Thành - 2A202600138 (Member F)
