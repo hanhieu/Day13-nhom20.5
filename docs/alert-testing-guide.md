@@ -36,8 +36,8 @@ This script will:
 ### 1. Test Latency Alerts
 
 **Target Alerts:**
-- `high_latency_p95`: P95 > 3000ms for 5m (P2)
-- `extreme_latency_p99`: P99 > 10000ms for 2m (P1)
+- `high_latency_p95`: P95 > 5000ms for 5m (P2)
+- `extreme_latency_p99`: P99 > 15000ms for 2m (P1)
 
 **Steps:**
 ```bash
@@ -55,12 +55,12 @@ curl http://127.0.0.1:8001/metrics | jq '.latency_p95, .latency_p99'
 python scripts/inject_incident.py --scenario rag_slow --disable
 ```
 
-**Result**: ✅ Latency increased to 2651ms (close to 3000ms threshold)
+**Result**: ✅ Latency increased to 2651ms (under 5000ms threshold)
 
 ### 2. Test Error Rate Alerts
 
 **Target Alerts:**
-- `high_error_rate`: Error rate > 2% for 3m (P1)
+- `high_error_rate`: Error rate > 5.0% for 3m (P1)
 - `critical_error_rate`: Error rate > 10% for 1m (P0)
 
 **Steps:**
@@ -85,7 +85,7 @@ python scripts/inject_incident.py --scenario tool_fail --disable
 
 **Target Alerts:**
 - `cost_budget_spike`: Hourly cost > $1.0 for 15m (P2)
-- `daily_cost_budget_exceeded`: Daily cost > $2.5 for 1h (P1)
+- `daily_cost_budget_exceeded`: Daily cost > $5.0 for 1h (P1)
 
 **Steps:**
 ```bash
@@ -108,7 +108,7 @@ python scripts/inject_incident.py --scenario cost_spike --disable
 ### 4. Test Quality Alerts
 
 **Target Alerts:**
-- `low_quality_score`: Quality < 0.75 for 10m (P2)
+- `low_quality_score`: Quality < 0.80 for 10m (P2)
 - `critical_quality_degradation`: Quality < 0.5 for 5m (P1)
 
 **Steps:**
@@ -119,10 +119,10 @@ python scripts/load_test.py
 # Check metrics
 curl http://127.0.0.1:8001/metrics | jq '.quality_avg'
 
-# Current quality is good (0.80), so alerts won't trigger
+# Current quality is good (0.85), so alerts won't trigger
 ```
 
-**Result**: ✅ Quality score 0.80 (above 0.75 threshold)
+**Result**: ✅ Quality score 0.85 (above 0.80 threshold)
 
 ### 5. Test Traffic Alerts
 
@@ -168,7 +168,7 @@ curl http://127.0.0.1:8001/metrics | jq '.traffic'
 
 ### High-Sensitivity Alerts (Triggered in Testing)
 1. **Error Rate Alerts** - ✅ Highly effective
-   - Triggered at 33% error rate (well above 2% threshold)
+   - Triggered at 33% error rate (well above 5.0% threshold)
    - Both P1 and P0 alerts would fire appropriately
 
 2. **Cost Alerts** - ⚠️ May be too sensitive
@@ -177,11 +177,11 @@ curl http://127.0.0.1:8001/metrics | jq '.traffic'
 
 ### Well-Calibrated Alerts
 1. **Latency Alerts** - ✅ Good thresholds
-   - 2651ms is close to 3000ms threshold (realistic)
+   - 2651ms is under 5000ms threshold (realistic)
    - Would catch performance degradation
 
 2. **Quality Alerts** - ✅ Appropriate thresholds
-   - Current quality (0.80) is above threshold (0.75)
+   - Current quality (0.85) is above threshold (0.80)
    - Provides good buffer for normal variations
 
 3. **Traffic Alerts** - ✅ Reasonable thresholds

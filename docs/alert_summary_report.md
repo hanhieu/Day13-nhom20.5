@@ -10,11 +10,11 @@ Dưới đây là các ngưỡng cảnh báo (SLO) đã được thiết lập t
 
 | Cảnh báo | Mức độ | Điều kiện (Trigger) | Mục tiêu |
 | :--- | :---: | :--- | :--- |
-| **High Latency P95** | P2 | `latency_p95_ms > 3000` cho 5m | Đảm bảo tốc độ phản hồi 99.5% |
+| **High Latency P95** | P2 | `latency_p95_ms > 5000` cho 5m | Đảm bảo tốc độ phản hồi 99.5% |
 | **Critical Error Rate** | P0 | `error_rate_pct > 10` cho 1m | Phát hiện sập hệ thống ngay lập tức |
-| **High Error Rate** | P1 | `error_rate_pct > 2` cho 3m | Đảm bảo tỷ lệ lỗi < 2% |
-| **Daily Cost Budget** | P1 | `daily_cost_usd > 2.5` cho 1h | Kiểm soát chi phí OpenAI API |
-| **Low Quality Score** | P2 | `quality_score_avg < 0.75` cho 10m| Đảm bảo chất lượng AI trả lời |
+| **High Error Rate** | P1 | `error_rate_pct > 5.0` cho 3m | Đảm bảo tỷ lệ lỗi < 5.0% |
+| **Daily Cost Budget** | P1 | `daily_cost_usd > 5.0` cho 1h | Kiểm soát chi phí OpenAI API |
+| **Low Quality Score** | P2 | `quality_score_avg < 0.80` cho 10m| Đảm bảo chất lượng AI trả lời |
 | **No Traffic** | P2 | `requests_per_minute == 0` cho 5m | Phát hiện lỗi kết nối/mạng |
 
 ---
@@ -28,9 +28,9 @@ Dưới đây là dữ liệu log thực tế được trích xuất sau khi kí
 ```text
 [200] req-f708cb19 | latency: 20030.9ms | status: OK
 [200] req-31eade76 | latency: 25033.2ms | status: OK
-... (Latency vượt ngưỡng P95 3000ms)
+... (Latency vượt ngưỡng P95 5000ms)
 ```
-**Phân tích:** Log cho thấy Latency đạt tới ~25 giây, vi phạm SLO 3000ms. Alert `high_latency_p95` sẽ được kích hoạt.
+**Phân tích:** Log cho thấy Latency đạt tới ~25 giây, vi phạm SLO 5000ms. Alert `high_latency_p95` sẽ được kích hoạt.
 
 ### B. Kịch bản: Lỗi công cụ (tool_fail)
 *Ghi nhận từ đợt chạy Load Test 2:*

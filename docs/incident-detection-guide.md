@@ -23,7 +23,7 @@ tail -5 data/logs.jsonl | grep latency_ms
 ```bash
 curl http://127.0.0.1:8001/metrics | jq '.latency_p95, .latency_p99'
 ```
-**Look for**: P95 > 3000ms, P99 > 6000ms
+**Look for**: P95 > 5000ms, P99 > 15000ms
 
 **C. Langfuse Traces**
 - Go to: https://cloud.langfuse.com

@@ -16,8 +16,8 @@
 
 ### Current Live Metrics
 - **Traffic**: 31 total requests
-- **Latency P95**: 2651ms (close to 3000ms SLO)
-- **Error Rate**: 32.26% (above 2% SLO threshold)
+- **Latency P95**: 2651ms (under 5000ms SLO)
+- **Error Rate**: 32.26% (above 5.0% SLO threshold)
 - **Total Cost**: $0.1249
 - **Quality**: 0.8774 (87.74%)
 - **Hallucination**: 12.26% (derived from quality: 100% - 87.74%)

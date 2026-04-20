@@ -2,7 +2,7 @@
 
 ## 1. High Latency P95 {#1-high-latency-p95}
 - Severity: P2
-- Trigger: `latency_p95_ms > 3000 for 5m`
+- Trigger: `latency_p95_ms > 5000 for 5m`
 - Impact: Tail latency breaches SLO (99.5% target)
 - First checks:
   1. Open top slow traces in Langfuse (last 1h)
@@ -15,7 +15,7 @@
 
 ## 1. Extreme Latency P99 {#1-extreme-latency-p99}
 - Severity: P1
-- Trigger: `latency_p99_ms > 10000 for 2m`
+- Trigger: `latency_p99_ms > 15000 for 2m`
 - Impact: Critical — users experiencing >10s response times
 - First checks:
   1. Check if `rag_slow` incident is active
@@ -28,7 +28,7 @@
 
 ## 2. High Error Rate {#2-high-error-rate}
 - Severity: P1
-- Trigger: `error_rate_pct > 2 for 3m`
+- Trigger: `error_rate_pct > 5.0 for 3m`
 - Impact: Users receiving failed responses
 - First checks:
   1. Group logs by `error_type`: `grep "event.*request_failed" data/logs.jsonl`
@@ -67,8 +67,8 @@
 
 ## 3. Daily Cost Budget Exceeded {#3-daily-cost-budget-exceeded}
 - Severity: P1
-- Trigger: `daily_cost_usd > 2.5 for 1h`
-- Impact: Daily budget of $2.50 breached
+- Trigger: `daily_cost_usd > 5.0 for 1h`
+- Impact: Daily budget of $5.00 breached
 - First checks:
   1. Identify top cost-generating features/sessions
   2. Check for token-heavy prompts: review `tokens_in` in traces
@@ -80,8 +80,8 @@
 
 ## 4. Low Quality Score {#4-low-quality-score}
 - Severity: P2
-- Trigger: `quality_score_avg < 0.75 for 10m`
-- Impact: Response quality below SLO (95% target at >= 0.75)
+- Trigger: `quality_score_avg < 0.80 for 10m`
+- Impact: Response quality below SLO (95% target at >= 0.80)
 - First checks:
   1. Sample recent low-score responses from logs
   2. Check if RAG retrieval returned empty docs (`doc_count == 0`)
