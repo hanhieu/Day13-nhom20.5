@@ -98,6 +98,10 @@
 ### Phan Anh Khôi - 2A202600276 (Member A)
 - [TASKS_COMPLETED]: Implemented Correlation IDs middleware, enriched structured logs with context, and built the PII scrubber for sensitive data directly inside `app/logging_config.py` and `app/pii.py`.
 - [EVIDENCE_LINK]: (Provide Link to commit or PR for Logging)
+Bổ sung PII patterns: https://github.com/hanhieu/Day13-nhom29/commit/f5c51fdc410b241cc8b16acda32a7c1aedd90be5
+Mask PII khi đẩy lên phần Input trên Langfuse trace: https://github.com/hanhieu/Day13-nhom29/commit/d561e20ca56c890123094474895136d1ea331fcb
+Tạo uid ở middleware: https://github.com/hanhieu/Day13-nhom29/commit/b86f4a4625c711f00423d582e18f12d296bfac94
+Logging: https://github.com/hanhieu/Day13-nhom29/commit/43239934808ea2def28c5261083f5cda7585c995
 
 ### Nguyễn Hữu Quang - 2A202600167 (Member B)
 - [TASKS_COMPLETED]: Instrumented Langfuse tracing using the `@observe` decorator, tracked pipeline inputs/outputs, and propagated tags and metadata across application spans.
